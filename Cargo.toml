@@ -1,0 +1,23 @@
+[package]
+name = "dcmplr"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+# level data
+base64 = "0.13.0"
+quick-xml = "0.20.0"
+libflate = "1.1.0"
+crc32fast = "1.2.0"
+aes = "0.7.4"
+block-modes = "0.8.1"
+ahash = "0.8.0"
+phf_macros = "0.11.1"
+phf = "0.11.1"
+itertools = "0.10.5"
+
+# terminal
+crossterm = "0.25.0"
