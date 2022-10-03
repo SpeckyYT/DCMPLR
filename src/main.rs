@@ -7,6 +7,7 @@ mod object;
 mod load_savefile;
 mod parse_level;
 mod compiler;
+mod ast;
 
 fn main() {
     let path = load_savefile::local_levels_path();
@@ -19,7 +20,7 @@ fn main() {
 
     let (_, level) = full_level.split_once("kA11,0;").expect("Failed to get level");
 
-    println!("{}", level);
+    // println!("{}", level);
 
     let level = parse_level::parse_level(level);
 

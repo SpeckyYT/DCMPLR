@@ -79,6 +79,8 @@ pub fn parse_level(level_string: &str) -> Level {
             })
             .for_each(drop);
 
+        if object.params.is_empty() { continue }
+
         object.update_by_spwn();
         level.objects.push(object);
     }

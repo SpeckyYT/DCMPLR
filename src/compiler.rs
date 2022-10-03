@@ -1,4 +1,5 @@
-use crate::object::{ObjParam, GDObj};
+use crate::object::*;
+use crate::ast::*;
 
 impl GDObj {
     fn to_obj(&self) -> String {

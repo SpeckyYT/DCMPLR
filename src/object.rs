@@ -30,13 +30,20 @@ impl GDObj {
         }
     }
     pub fn update_by_spwn(&mut self) {
-        let groups = self.params.get(&57);
-
-        self.by_spwn = if let Some(groups) = groups {
-            match groups {
-                ObjParam::Ints(groups) => groups.contains(&SPWN_GROUP),
-                _ => unreachable!(),
+        if self.is_by_spwn() {
+            if let Some(ObjParam::Ints(groups)) = self.params.get_mut(&57) {
+                groups.remove(
+                    groups.iter().position(|&x| x == SPWN_GROUP).unwrap()
+                );
             }
+        }
+    }
+    pub fn is_by_spwn(&self) -> bool {
+        self.by_spwn || self.has_group(SPWN_GROUP)
+    }
+    pub fn has_group(&self, group_id: u16) -> bool {
+        if let Some(ObjParam::Ints(v)) = self.params.get(&57) {
+            v.contains(&group_id)
         } else {
             false
         }
