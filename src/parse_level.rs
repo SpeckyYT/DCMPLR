@@ -27,13 +27,13 @@ pub fn parse_level(level_string: &str) -> Level {
         objects: vec![],
     };
 
-    let objects_strings: Vec<&str> = level_string.split(";").collect();
+    let objects_strings: Vec<&str> = level_string.split(';').collect();
 
     for object_string in objects_strings {
         let mut object = GDObj::new();
 
         object_string
-            .split(",")
+            .split(',')
             .tuples()
             .map(|(key, value)| {
                 let key_int = key.parse().unwrap();
@@ -56,7 +56,7 @@ pub fn parse_level(level_string: &str) -> Level {
                         IntegerArray => {
                             object.params.insert(
                                 key_int,
-                                ObjParam::Ints(value.split(".").map(|v| v.parse().unwrap()).collect()),
+                                ObjParam::Ints(value.split('.').map(|v| v.parse().unwrap()).collect()),
                             );
                         },
                         Text => {
@@ -69,7 +69,7 @@ pub fn parse_level(level_string: &str) -> Level {
                 } else {
                     object.params.insert(
                         key_int,
-                        if value.contains(".") {
+                        if value.contains('.') {
                             ObjParam::Float(value.parse().unwrap())
                         } else {
                             ObjParam::Int(value.parse().unwrap())

@@ -1,6 +1,6 @@
 use ahash::AHashMap;
 use phf_macros::phf_map;
-use phf;
+
 
 type Int = u16;
 type Float = f64;
@@ -50,7 +50,7 @@ impl GDObj {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum ParameterType {
     Bool,
     Text,

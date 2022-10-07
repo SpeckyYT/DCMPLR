@@ -1,9 +1,9 @@
 use std::io::Read;
 use std::path::PathBuf;
-use std::fs;
-use std::io::Cursor;
 
-use libflate::{gzip, zlib};
+
+
+use libflate::{gzip};
 
 fn xor(data: Vec<u8>, key: u8) -> Vec<u8> {
     data.into_iter().map(|b| b ^ key).collect()
@@ -18,7 +18,7 @@ fn base_64_decrypt(encoded: Vec<u8>) -> Vec<u8> {
     .unwrap()
 }
 
-use quick_xml::events::{BytesText, Event};
+use quick_xml::events::{Event};
 use quick_xml::Reader;
 //use std::io::BufReader;
 fn decrypt_savefile(mut sf: Vec<u8>) -> Result<Vec<u8>, String> {

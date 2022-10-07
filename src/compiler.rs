@@ -1,5 +1,5 @@
 use crate::object::*;
-use crate::ast::*;
+
 
 impl GDObj {
     fn to_obj(&self) -> String {
@@ -39,13 +39,11 @@ impl GDObj {
 }
 
 pub fn compile(objects: Vec<GDObj>) -> String {
-    let code = objects
+    objects
         .iter()
         .map(|object|{
             object.to_obj()
         })
         .collect::<Vec<String>>()
-        .join("\n");
-
-    code
+        .join("\n")
 }
