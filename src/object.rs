@@ -2,12 +2,12 @@ use ahash::AHashMap;
 use phf_macros::phf_map;
 
 
-type Int = u16;
+type Int = isize;
 type Float = f64;
 
 const SPWN_GROUP: Int = 1001;
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, PartialOrd)]
 pub enum ObjParam {
     Bool(bool),
     Int(Int),
@@ -39,11 +39,11 @@ impl GDObj {
         }
     }
     pub fn is_by_spwn(&self) -> bool {
-        self.by_spwn || self.has_group(SPWN_GROUP)
+        self.by_spwn || self.has_group(SPWN_GROUP as u16)
     }
     pub fn has_group(&self, group_id: u16) -> bool {
         if let Some(ObjParam::Ints(v)) = self.params.get(&57) {
-            v.contains(&group_id)
+            v.contains(&(group_id as isize))
         } else {
             false
         }

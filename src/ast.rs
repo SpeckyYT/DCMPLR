@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter, Result};
+
 use ahash::HashMap;
 use itertools::Itertools;
 
@@ -41,7 +43,7 @@ pub enum Expression {
 }
 
 pub enum Number {
-    Int(isize),
+    Int(i128),
     Float(f64),
 }
 
@@ -59,37 +61,37 @@ pub enum IdClass {
 }
 
 
-impl Body {
-    fn to_code(&self, indent: usize) -> String {
-        self.0
-            .iter()
-            .map(|stmnt| format!("{};", stmnt.to_code(indent)))
-            .join("\n")
+impl Display for Body {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        for stmnt in &self.0 {
+            write!(f, "{}\n", stmnt)?
+        }
+        Ok(())
     }
 }
 
-impl Statement {
-    fn to_code(&self, indent: usize) -> String {
+impl Display for Statement {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         use Statement::*;
 
         match self {
             Definition {
                 variable_name,
                 expression,
-            } => format!("let {} = {}", variable_name, expression.to_code(indent)),
+            } => write!(f, "let {} = {}", variable_name, expression),
 
             If {
                 condition,
                 if_body,
-            } => format!("if {} {{\n{}\n}}", condition.to_code(0), if_body.to_code(indent + 1)),
+            } => write!(f, "if {} {{\n{}\n}}", condition, if_body),
 
-            Spawn(expr) => format!("{}!", expr.to_code(indent)),
+            Spawn(expr) => write!(f, "{}!", expr),
         }
     }
 }
 
-impl Expression {
-    fn to_code(&self, indent: usize) -> String {
+impl Display for Expression {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         use Expression::*;
 
         match self {

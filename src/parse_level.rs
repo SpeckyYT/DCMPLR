@@ -36,6 +36,8 @@ pub fn parse_level(level_string: &str) -> Level {
             .split(',')
             .tuples()
             .map(|(key, value)| {
+                let (key, value) = (key.trim(), value.trim());
+
                 let key_int = key.parse().unwrap();
 
                 let typ = PROPERTIES.get(key);
