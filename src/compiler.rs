@@ -79,9 +79,9 @@ impl Display for GDObj {
                             .join(", ")
                     ),
                     Text(val) => {
-                        let b64 = base64::decode(val).map(|b| String::from_utf8(b));
+                        let b64 = base64::decode(val).map(String::from_utf8);
 
-                        if b64.is_ok() && b64.as_ref().unwrap().is_ok() && val.len() > 0 {
+                        if b64.is_ok() && b64.as_ref().unwrap().is_ok() && !val.is_empty() {
                             format!("$.b64encode({})", quote_string(&b64.unwrap().unwrap()))
                         } else {
                             // technically this is unreachable, but I'll let it in anyways
@@ -111,11 +111,11 @@ pub fn compile(objects: Vec<GDObj>) -> String {
         .join("\n")
 }
 
-pub fn quote_string(string: &String) -> String {
+pub fn quote_string(string: &str) -> String {
     // this makes sense, I swear
     if string.contains('\'') {
-        format!("\"{}\"", string.replace("\"", "\\\""))
+        format!("\"{}\"", string.replace('\"', "\\\""))
     } else {
-        format!("\'{}\'", string.replace("\'", "\\\'"))
+        format!("\'{}\'", string.replace('\'', "\\\'"))
     }
 }

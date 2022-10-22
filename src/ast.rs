@@ -64,7 +64,7 @@ pub enum IdClass {
 impl Display for Body {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         for stmnt in &self.0 {
-            write!(f, "{}\n", stmnt)?
+            writeln!(f, "{}", stmnt)?
         }
         Ok(())
     }
