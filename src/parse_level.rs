@@ -35,7 +35,7 @@ pub fn parse_level(level_string: &str) -> Level {
         object_string
             .split(',')
             .tuples()
-            .map(|(key, value)| {
+            .for_each(|(key, value)| {
                 let (key, value) = (key.trim(), value.trim());
 
                 let key_int = key.parse().unwrap();
@@ -78,8 +78,7 @@ pub fn parse_level(level_string: &str) -> Level {
                         }
                     );
                 }
-            })
-            .for_each(drop);
+            });
 
         if object.params.is_empty() { continue }
 

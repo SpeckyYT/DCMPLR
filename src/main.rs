@@ -6,6 +6,7 @@ use crossterm::style::Stylize;
 mod object;
 mod load_savefile;
 mod parse_level;
+mod processing;
 mod compiler;
 mod ast;
 
@@ -26,9 +27,21 @@ fn main() {
 
     let (spwn, other) = level.split_spwn();
 
-    let spwn = compiler::compile(spwn);
-    let other = compiler::compile(other);
+    let spwn = processing::FeetAss::new(spwn);
+    let other = processing::FeetAss::new(other);
 
-    println!("{}", spwn.green());
-    println!("{}", other.magenta());
+    // STATIC OBJECTS
+    if spwn.static_objects.len() + other.static_objects.len() > 0 {
+        let spwn_static = compiler::compile(spwn.static_objects);
+        let other_static = compiler::compile(other.static_objects);
+
+        println!("{}", "extract obj_props\n".red());
+        println!("{}", spwn_static.green());
+        println!("{}", other_static.magenta());
+    }
+
+    // dynamic
+    let spwn_dynamic = spwn.groups;
+    let other_dynamic = other.groups;
+    // ^ not sure what to do with these mfs
 }

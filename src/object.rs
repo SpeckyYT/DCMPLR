@@ -32,10 +32,13 @@ impl GDObj {
     pub fn update_by_spwn(&mut self) {
         if self.is_by_spwn() {
             if let Some(ObjParam::Ints(groups)) = self.params.get_mut(&57) {
-                groups.remove(
-                    groups.iter().position(|&x| x == SPWN_GROUP).unwrap()
-                );
+                *groups = groups
+                    .iter()
+                    .filter(|&i| i != &SPWN_GROUP)
+                    .copied()
+                    .collect();
             }
+            self.by_spwn = true
         }
     }
     pub fn is_by_spwn(&self) -> bool {

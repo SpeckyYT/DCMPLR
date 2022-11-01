@@ -14,7 +14,7 @@ let name = obj_props! {
 */
 
 macro_rules! obj_props {
-    ($key:ident; $params:expr; $($id:literal $(=> ($($m:literal)*))? : $x:ident,)*) => {
+    ($key:ident; $params:expr; $($id:literal $(# ($($m:literal)*))? : $x:ident,)*) => {
         match $key {
             $(
                 $id $(
@@ -101,9 +101,9 @@ impl Display for GDObj {
                 68: ROTATE_DEGREES,
                 69: TIMES_360,
                 70: LOCK_OBJECT_ROTATION,
-                71 => (901): TARGET_POS,
-                71 => (1346): CENTER,
-                71 => (1347): FOLLOW,
+                71 # (901): TARGET_POS,
+                71 # (1346): CENTER,
+                71 # (1347): FOLLOW,
                 71: TARGET_POS,
                 72: X_MOD,
                 73: Y_MOD,
@@ -112,7 +112,7 @@ impl Display for GDObj {
                 77: COUNT,
                 78: SUBTRACT_COUNT,
                 79: PICKUP_MODE,
-                80 => (1816): BLOCK_A,
+                80 # (1816): BLOCK_A,
                 80: BLOCK_A,
                 80: ITEM,
                 81: HOLD_MODE,
