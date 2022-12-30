@@ -16,8 +16,11 @@ aes = "0.7.4"
 block-modes = "0.8.1"
 ahash = "0.8.0"
 phf_macros = "0.11.1"
-phf = "0.11.1"
+phf = { version = "0.11", features = ["macros"] }
 itertools = "0.10.5"
+slotmap = "1.0.6"
+num-traits = "0.2"
+num-derive = "0.3"
 
 # terminal
 crossterm = "0.25.0"
