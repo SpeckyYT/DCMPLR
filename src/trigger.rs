@@ -93,8 +93,8 @@ trigger_fns! {
     [TriggerFunctions]
 
     Move => move(
-        X,
-        Y,
+        MOVE_X,
+        MOVE_Y,
         DURATION?,
         EASING?,
         EASING_RATE?,
