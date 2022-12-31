@@ -1,89 +1,56 @@
+use ahash::AHashMap;
 use itertools::Itertools;
+use num_traits::FromPrimitive;
 
-use crate::object::{
-    GDObj,
-    ObjParam,
-    ParameterType,
-    PROPERTIES,
-};
+use crate::object::{Block, Int, ObjectParams, ObjectType, Trigger, TriggerType};
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Level {
-    pub objects: Vec<GDObj>,
+    pub objects: Vec<ObjectType>,
 }
 
-impl Level {
-    /// # SPWN SPLIT
-    /// `(spwn, non_spwn)`
-    pub fn split_spwn(self) -> (Vec<GDObj>, Vec<GDObj>) {
-        self.objects
-            .into_iter()
-            .partition(|obj| obj.by_spwn)
-    }
+// intermediary object
+#[derive(Default)]
+struct UnknownObject {
+    pub params: AHashMap<Int, ObjectParams::Params>,
 }
 
 pub fn parse_level(level_string: &str) -> Level {
-    let mut level = Level {
-        objects: vec![],
-    };
+    let mut level = Level { objects: vec![] };
 
     let objects_strings: Vec<&str> = level_string.split(';').collect();
 
     for object_string in objects_strings {
-        let mut object = GDObj::new();
+        let mut temp_object = UnknownObject::default();
 
-        object_string
-            .split(',')
-            .tuples()
-            .for_each(|(key, value)| {
-                let (key, value) = (key.trim(), value.trim());
+        object_string.split(',').tuples().for_each(|(key, value)| {
+            let (key, value) = (key.trim(), value.trim());
 
-                let key_int = key.parse().unwrap();
+            let key_int: isize = key.parse().unwrap();
 
-                let typ = PROPERTIES.get(key);
-                if let Some(typ) = typ {
-                    use ParameterType::*;
+            temp_object
+                .params
+                .insert(key_int, ObjectParams::from_key(key_int, value));
+        });
 
-                    match typ {
-                        Bool => {
-                            object.params.insert(
-                                key_int,
-                                ObjParam::Bool(match value {
-                                    "0" => false,
-                                    "1" => true,
-                                    _ => true, // ????
-                                }),
-                            );
-                        },
-                        IntegerArray => {
-                            object.params.insert(
-                                key_int,
-                                ObjParam::Ints(value.split('.').map(|v| v.parse().unwrap()).collect()),
-                            );
-                        },
-                        Text => {
-                            object.params.insert(
-                                key_int,
-                                ObjParam::Text(value.to_string()),
-                            );
-                        },
-                    };
-                } else {
-                    object.params.insert(
-                        key_int,
-                        if value.contains('.') {
-                            ObjParam::Float(value.parse().unwrap())
-                        } else {
-                            ObjParam::Int(value.parse().unwrap())
-                        }
-                    );
-                }
-            });
+        if let Some(ObjectParams::Params::OBJ_ID(id)) =
+            temp_object.params.get(&ObjectParams::Id::OBJ_ID)
+        {
+            let maybe_typ: Option<TriggerType> = FromPrimitive::from_isize(*id);
 
-        if object.params.is_empty() { continue }
-
-        object.update_by_spwn();
-        level.objects.push(object);
+            if let Some(typ) = maybe_typ {
+                level.objects.push(ObjectType::Trigger(Trigger {
+                    params: temp_object.params,
+                    form: typ,
+                }));
+            } else {
+                level.objects.push(ObjectType::Block(Block {
+                    params: temp_object.params,
+                }));
+            }
+        } else {
+            continue;
+        }
     }
 
     level
