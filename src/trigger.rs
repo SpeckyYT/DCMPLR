@@ -62,13 +62,13 @@ macro_rules! trigger_fns {
 
     // `?` and everything following
     // ex: the `?, Y` in `X?, Y`
-    (@genparams [$params:ident] ? $($rest:tt)*) => {
+    (@genparams [$params:ident] ?, $($rest:tt)*) => {
         trigger_fns!(@genparams [$params] $($rest)*)
     };
 
     // `,` and everything following
     // ex: the `, Y` in `X, Y`
-    (@genparams [$params:ident] , $($rest:tt)*) => {
+    (@genparams [$params:ident] = $_:literal, $($rest:tt)*) => {
         trigger_fns!(@genparams [$params] $($rest)*)
     };
 
@@ -79,8 +79,8 @@ macro_rules! trigger_fns {
 
     // default values
     // parameter is not optional (no `?`)
-    (@defaultval , $($rest:tt)*) => {
-        panic!("trigger missing param")
+    (@defaultval = $default:literal, $($rest:tt)*) => {
+        format!("{}, ", stringify!($default))
     };
 
     // parameter is optional (has `?`)
@@ -93,8 +93,9 @@ trigger_fns! {
     [TriggerFunctions]
 
     Move => move(
-        MOVE_X,
-        MOVE_Y,
+        MOVE_X = 0,
+        MOVE_Y = 0,
+        
         DURATION?,
         EASING?,
         EASING_RATE?,

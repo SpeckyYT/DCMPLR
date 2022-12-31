@@ -20,16 +20,14 @@ pub struct InnerContext {
 
 #[derive(Default, Debug)]
 pub struct Context {
-    group_map: AHashMap<Int, ContextKey>,
-
-    pub contexts: SlotMap<ContextKey, InnerContext>,
+    pub contexts: AHashMap<Int, InnerContext>,
 
     pub current_context: Int,
 }
 
 impl Context {
     fn current_context(&mut self) -> &mut InnerContext {
-        &mut self.contexts[self.group_map[&self.current_context]]
+        self.contexts.get_mut(&self.current_context).unwrap()
     }
 
     pub fn push_trigger(&mut self, trigger: ObjectKey) {
@@ -45,27 +43,26 @@ impl Context {
     }
 
     pub fn exists(&mut self, group: Int) -> bool {
-        self.group_map.contains_key(&group)
+        self.contexts.contains_key(&group)
     }
 
     pub fn push(&mut self, group: Int) {
-        if !self.group_map.contains_key(&group) {
-            let key = self.contexts.insert(InnerContext {
+        if !self.contexts.contains_key(&group) {
+            self.contexts.insert(
                 group,
-                triggers: vec![],
-                ..Default::default()
-            });
-
-            self.group_map.insert(group, key);
+                InnerContext {
+                    group,
+                    triggers: vec![],
+                    ..Default::default()
+                },
+            );
 
             self.current_context = group;
         }
     }
 
     pub fn pop(&mut self, group: Int) -> InnerContext {
-        self.contexts
-            .remove(self.group_map.remove(&group).unwrap())
-            .unwrap()
+        self.contexts.remove(&group).unwrap()
     }
 }
 
@@ -145,7 +142,7 @@ impl<'ob> Tree<'ob> {
                         // like giving a move group to a spawn trigger, so we store all parent context groups and then verify later
                         let mut parents = vec![];
 
-                        for cg in self.context.group_map.keys() {
+                        for cg in self.context.contexts.keys() {
                             if self.possibly_parent_contexts.contains(cg) {
                                 parents.push(*cg);
                             }
