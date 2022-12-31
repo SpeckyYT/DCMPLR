@@ -22,7 +22,7 @@ macro_rules! trigger_fns {
                     $(
                         TriggerType::$trig_name => {
                             format!(
-                                "{}( {})",
+                                "{}({})",
                                 stringify!($fn_name),
                                 trigger_fns!(@genparams [params] $($params)*)
                             )
@@ -46,7 +46,7 @@ macro_rules! trigger_fns {
     (@genparams [$params:ident] $param_name:ident $($rest:tt)*) => {{
         let mut args = match $params.get(&ObjectParams::Id:: $param_name ) {
             Some(ObjectParams::Params:: $param_name (val)) => {
-                format!("{}, ", val.to_string())
+                format!(trigger_fns!(@formatarg $($rest)*), val.to_string())
             },
             _ => {
                 trigger_fns!(@defaultval $($rest)*)
@@ -59,6 +59,16 @@ macro_rules! trigger_fns {
 
         args
     }};
+
+    // still more arguments to insert after the current one ($rest)
+    (@formatarg $( $__:ident )?$( ? )?$( = $_:literal )? , $($rest:tt)+) => {
+        "{}, "
+    };
+
+    // no more arguments to insert after the current one (no $rest)
+    (@formatarg $( $__:ident )?$( ? )?$( = $_:literal )? , ) => {
+        "{}"
+    };
 
     // `?` and everything following
     // ex: the `?, Y` in `X?, Y`
@@ -80,7 +90,7 @@ macro_rules! trigger_fns {
     // default values
     // parameter is not optional (no `?`)
     (@defaultval = $default:literal, $($rest:tt)*) => {
-        format!("{}, ", stringify!($default))
+        format!(trigger_fns!(@formatarg $($rest)*), stringify!($default))
     };
 
     // parameter is optional (has `?`)
@@ -95,7 +105,7 @@ trigger_fns! {
     Move => move(
         MOVE_X = 0,
         MOVE_Y = 0,
-        
+
         DURATION?,
         EASING?,
         EASING_RATE?,
