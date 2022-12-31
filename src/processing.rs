@@ -153,7 +153,8 @@ impl<'ob> Tree<'ob> {
                         let groups = object.groups();
 
                         if (self.context.current_context == 0 && groups.is_none())
-                            || groups.unwrap().iter().any(|g| self.context.exists(*g))
+                            || groups.is_some()
+                            && groups.unwrap().iter().any(|g| self.context.exists(*g))
                         {
                             self.context.push_trigger(obj_key);
 
