@@ -106,7 +106,25 @@ trigger_fns! {
 pub enum TriggerType {
     Spawn = 1268,
     Move = 901,
-    // TODO: rest of triggers
+    Rotate = 1346,
+    Animate = 1585,
+    Pulse = 1006,
+    Count = 1611,
+    InstantCount = 1811,
+    Alpha = 1007,
+    Toggle = 1049,
+    Follow = 1347,
+    Stop = 1616,
+    Touch = 1595,
+    Shake = 1520,
+    Color = 899, // this should be the correct one
+    Hide = 1612,
+    Show = 1613,
+    OnDeath = 1812,
+    FollowPlayerY = 1814,
+    Collision = 1815,
+    Pickup = 1817,
+    // TODO: add some more minor triggers
 }
 
 #[derive(Clone, Debug)]

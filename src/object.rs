@@ -20,6 +20,7 @@ macro_rules! obj_params {
             ))?,
         )*
     ) => {
+        #[allow(non_snake_case)]
         pub mod $name {
             use super::*;
 
@@ -44,6 +45,7 @@ macro_rules! obj_params {
             }
 
             #[allow(non_snake_case)]
+            #[allow(dead_code)]
             pub mod Id {
                 use super::*;
 
@@ -53,6 +55,7 @@ macro_rules! obj_params {
             }
 
             pub fn from_key(key: Int, val: &str) -> self::Params {
+                #[allow(unreachable_patterns)]
                 match key {
                     $(
                         $param_id => self::Params::$param_name(<$param_type as std::str::FromStr>::from_str(val).unwrap()),
