@@ -4,7 +4,7 @@ use itertools::Itertools;
 use std::fmt::Write;
 
 use crate::{
-    object::{ObjectParams, ObjectType},
+    object::{ObjectParams::{self, Id}, ObjectType},
     processing::{ContextKey, Tree},
 };
 
@@ -110,10 +110,25 @@ fn compile_object(object: &ObjectType) -> String {
         .map(|key| {
             let param = &params[key];
 
-            // TODO: decode base64 string params?
             let param_name = ObjectParams::param_name(*key, object.id());
 
-            format!("    {}: {}", param_name, param.to_string())
+            let default = || format!("{}: {}", &param_name, param.to_string());
+
+            use Id::*;
+
+            let param_string = match *key {
+                TEXT => {
+                    if let Ok(Ok(string)) = base64::decode(param.to_string()).map(|v| String::from_utf8(v)) {
+                        format!("{}: $.b64decode({})", param_name, quote_string(&string))
+                    } else {
+                        default()
+                    }
+                }
+                _ => {
+                    default()
+                }
+            };
+            format!("    {},", param_string)
         })
         .collect::<Vec<String>>()
         .join("\n");
@@ -121,11 +136,11 @@ fn compile_object(object: &ObjectType) -> String {
     definition
 }
 
-// fn quote_string(string: &str) -> String {
-//     // this makes sense, I swear
-//     if string.contains('\'') {
-//         format!("\"{}\"", string.replace('\"', "\\\""))
-//     } else {
-//         format!("\'{}\'", string.replace('\'', "\\\'"))
-//     }
-// }
+fn quote_string(string: &str) -> String {
+    // this makes sense, I swear
+    if string.contains('\'') {
+        format!("\"{}\"", string.replace('\"', "\\\""))
+    } else {
+        format!("\'{}\'", string.replace('\'', "\\\'"))
+    }
+}

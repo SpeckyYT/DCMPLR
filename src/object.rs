@@ -20,6 +20,7 @@ macro_rules! obj_params {
             ))?,
         )*
     ) => {
+        #[allow(non_snake_case)]
         pub mod $name {
             use super::*;
 
@@ -44,6 +45,7 @@ macro_rules! obj_params {
             }
 
             #[allow(non_snake_case)]
+            #[allow(dead_code)]
             pub mod Id {
                 use super::*;
 
@@ -53,11 +55,12 @@ macro_rules! obj_params {
             }
 
             pub fn from_key(key: Int, val: &str) -> self::Params {
+                #[allow(unreachable_patterns)]
                 match key {
                     $(
                         $param_id => self::Params::$param_name(<$param_type as std::str::FromStr>::from_str(val).unwrap()),
                     )*
-                    _ => panic!("unknown key")
+                    k => panic!("unknown key {k}"),
                 }
             }
 
@@ -108,19 +111,9 @@ obj_params! {
     17: BLENDING(Bool),
     20: EDITOR_LAYER_1(Int),
 
-    // TODO:
-    // 21: COLOR(Vec<Int>)
-    // (|col: Vec<Int>| -> String {
-    //     "".into()
-    // }),
-    // 22: COLOR_2(Vec<Int>)
-    // (|col2: Vec<Int>|-> String {
-    //     "".into()
-    // }),
-    // 23: TARGET_COLOR(Vec<Int>)
-    // (|target_col: Vec<Int>| -> String {
-    //     "".into()
-    // }),
+    21: COLOR(Int) (|col: &Int| -> String { format!("{}c", col) }),
+    22: COLOR_2(Int) (|col2: &Int|-> String { format!("{}c", col2) }),
+    23: TARGET_COLOR(Int) (|target_col: &Int| -> String { format!("{}c", target_col) }),
 
     24: Z_LAYER(Int),
     25: Z_ORDER(Int),
