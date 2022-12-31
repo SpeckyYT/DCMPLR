@@ -110,6 +110,22 @@ trigger_fns! {
         EASING?,
         EASING_RATE?,
     )
+
+    Alpha => alpha(
+        OPACITY = 1,
+        DURATION?,
+    )
+
+    Stop => stop()
+
+    Show => show()
+    Hide => hide()
+
+    Shake => shake(
+        STRENGTH = 1,
+        INTERVAL = 0,
+        DURATION?,
+    )
 }
 
 #[derive(FromPrimitive, Copy, Clone, Debug)]
